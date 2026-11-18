@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KREM Messenger</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#090b12;
+ color:#fff;
+ font-family:Arial,sans-serif;
+ min-height:100vh;
+}
+header{
+ padding:22px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ border-bottom:1px solid #ffffff15;
+}
+.logo{font-size:27px;font-weight:800;letter-spacing:2px}
+.logo span{color:#8c7bff}
+button{
+ border:0;cursor:pointer;color:white;
+ background:#25283b;border-radius:13px;
+ padding:12px 16px;font-size:15px;
+}
+button:active{transform:scale(.96)}
+main{max-width:650px;margin:auto;padding:20px}
+.welcome{margin:22px 0 25px}
+.welcome h1{font-size:27px;margin-bottom:8px}
+.muted{color:#9296ad;font-size:14px}
+.search{
+ width:100%;padding:16px;
+ border:1px solid #ffffff18;
+ border-radius:15px;background:#171a28;
+ color:white;font-size:15px;outline:none;
+}
+.section{margin:25px 0 13px;font-weight:bold}
+.chat{
+ display:flex;align-items:center;gap:14px;
+ padding:15px;margin-bottom:9px;
+ border:1px solid #ffffff10;
+ border-radius:17px;background:#151826;
+ cursor:pointer;
+}
+.avatar{
+ width:49px;height:49px;border-radius:50%;
+ display:grid;place-items:center;
+ background:linear-gradient(135deg,#8173ff,#3c9cff);
+ font-weight:bold;font-size:19px;
+}
+.chat-info{flex:1;min-width:0}
+.chat-info strong{display:block;margin-bottom:6px}
+.chat-info small{color:#9296ad}
+.online{color:#65dfa3;font-size:12px}
+.bottom{
+ position:fixed;bottom:0;left:0;right:0;
+ display:flex;justify-content:space-around;
+ padding:14px 5px;
+ background:#111421ee;
+ border-top:1px solid #ffffff18;
+ backdrop-filter:blur(15px);
+}
+.bottom button{background:transparent;color:#aaa}
+.bottom button.active{color:#a99aff}
+#messages{
+ display:none;position:fixed;inset:0;
+ background:#090b12;z-index:5;
+}
+.msg-head{padding:18px;border-bottom:1px solid #ffffff20}
+.msg-area{padding:20px;height:75vh;overflow:auto}
+.bubble{
+ background:#252442;padding:12px 16px;
+ border-radius:17px;margin:12px 0;
+ max-width:80%;width:max-content;
+}
+.mine{margin-left:auto;background:#6656c9}
+.composer{
+ position:absolute;bottom:15px;left:12px;right:12px;
+ display:flex;gap:8px;
+}
+.composer input{
+ flex:1;min-width:0;padding:14px;
+ background:#1a1d2b;color:white;
+ border:1px solid #ffffff20;border-radius:14px;
+}
+.light{background:#f0f1fa;color:#171827}
+.light .chat,.light .search{background:#fff;color:#171827}
+.light .bottom{background:#fff}
+</style>
+</head>
+<body>
+
+<header>
+ <div class="logo">KR<span>EM</span></div>
+ <button onclick="toggleTheme()">☀️</button>
+</header>
+
+<main>
+ <div class="welcome">
+  <h1>Добро пожаловать в KREM</h1>
+  <p class="muted">Общение без границ. Твой мир — твои правила.</p>
+ </div>
+
+ <input class="search" id="search"
+ placeholder="⌕  Поиск чатов..." oninput="filterChats()">
+
+ <div class="section">Сообщения</div>
+
+ <div id="chatList">
+  <div class="chat" onclick="openChat('Alex','A')">
+   <div class="avatar">A</div>
+   <div class="chat-info">
+    <strong>Alex</strong>
+    <small>Привет! Как дела?</small>
+   </div>
+   <span class="online">●</span>
+  </div>
+
+  <div class="chat" onclick="openChat('Maria','M')">
+   <div class="avatar" style="background:linear-gradient(135deg,#ec75bb,#8c65ed)">M</div>
+   <div class="chat-info">
+    <strong>Maria</strong>
+    <small>Отличный проект!</small>
+   </div>
+  </div>
+
+  <div class="chat" onclick="openChat('KREM Team','K')">
+   <div class="avatar" style="background:linear-gradient(135deg,#37c9b0,#3875ee)">K</div>
+   <div class="chat-info">
+    <strong>KREM Team</strong>
+    <small>Добро пожаловать!</small>
+   </div>
+  </div>
+ </div>
+</main>
+
+<div class="bottom">
+ <button class="active">💬<br>Чаты</button>
+ <button onclick="alert('Раздел контактов скоро появится')">👥<br>Контакты</button>
+ <button onclick="alert('Настройки скоро появятся')">⚙️<br>Настройки</button>
+ <button onclick="alert('Профиль скоро появится')">👤<br>Профиль</button>
+</div>
+
+<div id="messages">
+ <div class="msg-head">
+  <button onclick="closeChat()">← Назад</button>
+  <strong id="chatName"></strong>
+ </div>
+ <div class="msg-area" id="msgArea">
+  <div class="bubble">Привет! Добро пожаловать в KREM 👋</div>
+ </div>
+ <div class="composer">
+  <input id="messageInput" placeholder="Написать сообщение..."
+   onkeydown="if(event.key==='Enter')sendMessage()">
+  <button onclick="sendMessage()">➤</button>
+ </div>
+</div>
+
+<script>
+function toggleTheme(){
+ document.body.classList.toggle('light');
+}
+function openChat(name,letter){
+ document.getElementById('chatName').textContent=name;
+ document.getElementById('messages').style.display='block';
+}
+function closeChat(){
+ document.getElementById('messages').style.display='none';
+}
+function sendMessage(){
+ const input=document.getElementById('messageInput');
+ const text=input.value.trim();
+ if(!text)return;
+ const bubble=document.createElement('div');
+ bubble.className='bubble mine';
+ bubble.textContent=text;
+ document.getElementById('msgArea').appendChild(bubble);
+ input.value='';
+ document.getElementById('msgArea').scrollTop=
+ document.getElementById('msgArea').scrollHeight;
+}
+function filterChats(){
+ const q=document.getElementById('search').value.toLowerCase();
+ document.querySelectorAll('.chat').forEach(chat=>{
+  chat.style.display=chat.innerText.toLowerCase().includes(q)?'flex':'none';
+ });
+}
+</script>
+</body>
+</html>
