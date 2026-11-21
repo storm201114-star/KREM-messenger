@@ -3,193 +3,224 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KREM Messenger</title>
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;
- background:#090b12;
- color:#fff;
- font-family:Arial,sans-serif;
- min-height:100vh;
+body{margin:0;background:#000;color:#fff;font-family:Arial,sans-serif}
+button,input{font:inherit}
+button{cursor:pointer;transition:.25s}
+button:hover{background:#fff;color:#000;transform:scale(1.04)}
+button:active{transform:scale(.94)}
+header{height:70px;border-bottom:1px solid #222;display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:#000;position:sticky;top:0;z-index:5}
+.logo{font-size:27px;font-weight:900;letter-spacing:4px}
+.icon{height:42px;min-width:42px;border:1px solid #333;border-radius:13px;background:#111;color:#fff;font-size:20px}
+.layout{display:grid;grid-template-columns:330px 1fr;max-width:1200px;margin:auto;min-height:calc(100vh - 70px)}
+.sidebar{padding:22px;border-right:1px solid #222}
+.topline{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+h2{font-size:22px;margin:0}
+.search{width:100%;padding:14px;border-radius:13px;background:#111;border:1px solid #333;color:white;outline:none;margin-bottom:17px}
+.search:focus,.composer input:focus{border-color:white;box-shadow:0 0 12px #fff2}
+.chat{display:flex;align-items:center;gap:12px;padding:13px 10px;border-radius:14px;cursor:pointer;transition:.2s;animation:fade .3s}
+.chat:hover,.chat.active{background:#191919}
+.avatar{height:46px;width:46px;border-radius:50%;background:#fff;color:#000;display:grid;place-items:center;font-weight:bold;font-size:19px;flex-shrink:0}
+.chatinfo{flex:1;min-width:0}
+.chatinfo strong{display:block;margin-bottom:5px}
+.chatinfo small{color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.time{font-size:11px;color:#777}
+main{min-width:0;display:flex;flex-direction:column}
+.welcome{flex:1;display:grid;place-items:center;text-align:center;padding:20px}
+.welcome h1{font-size:48px;letter-spacing:8px;margin:0 0 15px}
+.welcome p{color:#777;line-height:1.7}
+.conversation{display:none;flex-direction:column;min-height:calc(100vh - 70px)}
+.conversation.show{display:flex}
+.chathead{height:75px;border-bottom:1px solid #222;display:flex;align-items:center;gap:12px;padding:12px 20px}
+.chathead small{display:block;color:#888;margin-top:5px}
+.messages{flex:1;padding:22px;display:flex;flex-direction:column;gap:12px;overflow-y:auto}
+.message{padding:13px 16px;max-width:78%;border-radius:17px;line-height:1.45;overflow-wrap:anywhere;animation:fade .2s}
+.received{background:#1b1b1b;align-self:flex-start}
+.sent{background:#fff;color:#000;align-self:flex-end}
+.composer{display:flex;gap:10px;padding:15px;border-top:1px solid #222}
+.composer input{flex:1;min-width:0;background:#111;border:1px solid #333;color:#fff;padding:14px;border-radius:14px;outline:none}
+.send{width:48px;border:0;border-radius:14px;background:#fff;color:#000;font-size:20px}
+.settings{display:none;padding:25px;animation:fade .3s}
+.settings.show{display:block}
+.settings h2{margin-bottom:22px}
+.setting{padding:19px 0;border-bottom:1px solid #222;color:#ddd}
+.setting span{color:#888;float:right}
+.profile{width:85px;height:85px;font-size:30px;margin:20px 0}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:700px){
+ .layout{display:block}
+ .sidebar{border:0;padding:18px}
+ main{min-height:55vh}
+ .conversation{height:calc(100dvh - 70px);min-height:450px}
+ .welcome{min-height:45vh}
+ .settings{min-height:55vh}
 }
-header{
- padding:22px;
- display:flex;
- justify-content:space-between;
- align-items:center;
- border-bottom:1px solid #ffffff15;
-}
-.logo{font-size:27px;font-weight:800;letter-spacing:2px}
-.logo span{color:#8c7bff}
-button{
- border:0;cursor:pointer;color:white;
- background:#25283b;border-radius:13px;
- padding:12px 16px;font-size:15px;
-}
-button:active{transform:scale(.96)}
-main{max-width:650px;margin:auto;padding:20px}
-.welcome{margin:22px 0 25px}
-.welcome h1{font-size:27px;margin-bottom:8px}
-.muted{color:#9296ad;font-size:14px}
-.search{
- width:100%;padding:16px;
- border:1px solid #ffffff18;
- border-radius:15px;background:#171a28;
- color:white;font-size:15px;outline:none;
-}
-.section{margin:25px 0 13px;font-weight:bold}
-.chat{
- display:flex;align-items:center;gap:14px;
- padding:15px;margin-bottom:9px;
- border:1px solid #ffffff10;
- border-radius:17px;background:#151826;
- cursor:pointer;
-}
-.avatar{
- width:49px;height:49px;border-radius:50%;
- display:grid;place-items:center;
- background:linear-gradient(135deg,#8173ff,#3c9cff);
- font-weight:bold;font-size:19px;
-}
-.chat-info{flex:1;min-width:0}
-.chat-info strong{display:block;margin-bottom:6px}
-.chat-info small{color:#9296ad}
-.online{color:#65dfa3;font-size:12px}
-.bottom{
- position:fixed;bottom:0;left:0;right:0;
- display:flex;justify-content:space-around;
- padding:14px 5px;
- background:#111421ee;
- border-top:1px solid #ffffff18;
- backdrop-filter:blur(15px);
-}
-.bottom button{background:transparent;color:#aaa}
-.bottom button.active{color:#a99aff}
-#messages{
- display:none;position:fixed;inset:0;
- background:#090b12;z-index:5;
-}
-.msg-head{padding:18px;border-bottom:1px solid #ffffff20}
-.msg-area{padding:20px;height:75vh;overflow:auto}
-.bubble{
- background:#252442;padding:12px 16px;
- border-radius:17px;margin:12px 0;
- max-width:80%;width:max-content;
-}
-.mine{margin-left:auto;background:#6656c9}
-.composer{
- position:absolute;bottom:15px;left:12px;right:12px;
- display:flex;gap:8px;
-}
-.composer input{
- flex:1;min-width:0;padding:14px;
- background:#1a1d2b;color:white;
- border:1px solid #ffffff20;border-radius:14px;
-}
-.light{background:#f0f1fa;color:#171827}
-.light .chat,.light .search{background:#fff;color:#171827}
-.light .bottom{background:#fff}
 </style>
 </head>
 <body>
-
 <header>
- <div class="logo">KR<span>EM</span></div>
- <button onclick="toggleTheme()">☀️</button>
+ <div class="logo">KREM.</div>
+ <button class="icon" onclick="openSettings()">⚙</button>
 </header>
 
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+ <div class="topline">
+  <h2>Сообщения</h2>
+  <button class="icon" onclick="addChat()">＋</button>
+ </div>
+ <input class="search" id="search" placeholder="⌕  Поиск чатов..." oninput="filterChats()">
+ <div id="chatList"></div>
+</aside>
+
 <main>
- <div class="welcome">
-  <h1>Добро пожаловать в KREM</h1>
-  <p class="muted">Общение без границ. Твой мир — твои правила.</p>
- </div>
-
- <input class="search" id="search"
- placeholder="⌕  Поиск чатов..." oninput="filterChats()">
-
- <div class="section">Сообщения</div>
-
- <div id="chatList">
-  <div class="chat" onclick="openChat('Alex','A')">
-   <div class="avatar">A</div>
-   <div class="chat-info">
-    <strong>Alex</strong>
-    <small>Привет! Как дела?</small>
-   </div>
-   <span class="online">●</span>
-  </div>
-
-  <div class="chat" onclick="openChat('Maria','M')">
-   <div class="avatar" style="background:linear-gradient(135deg,#ec75bb,#8c65ed)">M</div>
-   <div class="chat-info">
-    <strong>Maria</strong>
-    <small>Отличный проект!</small>
-   </div>
-  </div>
-
-  <div class="chat" onclick="openChat('KREM Team','K')">
-   <div class="avatar" style="background:linear-gradient(135deg,#37c9b0,#3875ee)">K</div>
-   <div class="chat-info">
-    <strong>KREM Team</strong>
-    <small>Добро пожаловать!</small>
-   </div>
+ <div class="welcome" id="welcome">
+  <div>
+   <h1>KREM.</h1>
+   <p>Твоё пространство для общения.<br>Выбери чат, чтобы начать.</p>
   </div>
  </div>
+
+ <section class="conversation" id="conversation">
+  <div class="chathead">
+   <div class="avatar" id="activeAvatar">A</div>
+   <div><strong id="activeName">Alex</strong><small>Демонстрационный чат</small></div>
+  </div>
+  <div class="messages" id="messages"></div>
+  <form class="composer" onsubmit="sendMessage(event)">
+   <input id="messageInput" placeholder="Написать сообщение..." autocomplete="off">
+   <button class="send" type="submit">➤</button>
+  </form>
+ </section>
+
+ <section class="settings" id="settings">
+  <h2>Настройки</h2>
+  <div class="avatar profile">K</div>
+  <h3>KREM Messenger</h3>
+  <div class="setting">Оформление <span>Pure Black</span></div>
+  <div class="setting">Цвет текста <span>Белый</span></div>
+  <div class="setting">Анимации <span>Включены</span></div>
+  <div class="setting">Версия <span>0.3 Prototype</span></div>
+  <button class="icon" onclick="closeSettings()" style="width:auto;padding:0 18px;margin-top:22px">Назад</button>
+ </section>
 </main>
-
-<div class="bottom">
- <button class="active">💬<br>Чаты</button>
- <button onclick="alert('Раздел контактов скоро появится')">👥<br>Контакты</button>
- <button onclick="alert('Настройки скоро появятся')">⚙️<br>Настройки</button>
- <button onclick="alert('Профиль скоро появится')">👤<br>Профиль</button>
-</div>
-
-<div id="messages">
- <div class="msg-head">
-  <button onclick="closeChat()">← Назад</button>
-  <strong id="chatName"></strong>
- </div>
- <div class="msg-area" id="msgArea">
-  <div class="bubble">Привет! Добро пожаловать в KREM 👋</div>
- </div>
- <div class="composer">
-  <input id="messageInput" placeholder="Написать сообщение..."
-   onkeydown="if(event.key==='Enter')sendMessage()">
-  <button onclick="sendMessage()">➤</button>
- </div>
 </div>
 
 <script>
-function toggleTheme(){
- document.body.classList.toggle('light');
-}
-function openChat(name,letter){
- document.getElementById('chatName').textContent=name;
- document.getElementById('messages').style.display='block';
-}
-function closeChat(){
- document.getElementById('messages').style.display='none';
-}
-function sendMessage(){
- const input=document.getElementById('messageInput');
- const text=input.value.trim();
- if(!text)return;
- const bubble=document.createElement('div');
- bubble.className='bubble mine';
- bubble.textContent=text;
- document.getElementById('msgArea').appendChild(bubble);
- input.value='';
- document.getElementById('msgArea').scrollTop=
- document.getElementById('msgArea').scrollHeight;
-}
-function filterChats(){
- const q=document.getElementById('search').value.toLowerCase();
- document.querySelectorAll('.chat').forEach(chat=>{
-  chat.style.display=chat.innerText.toLowerCase().includes(q)?'flex':'none';
+const chats=[
+ {name:"Alex",letter:"A",preview:"Привет! Как дела?",messages:[{text:"Привет! Как дела?",mine:false}]},
+ {name:"Maria",letter:"M",preview:"Отправила фото",messages:[{text:"Привет! Отправила фото 📷",mine:false}]},
+ {name:"KREM Team",letter:"K",preview:"Добро пожаловать!",messages:[{text:"Добро пожаловать в KREM!",mine:false}]},
+ {name:"David",letter:"D",preview:"Увидимся!",messages:[{text:"Увидимся!",mine:false}]}
+];
+
+let active=-1;
+const $=id=>document.getElementById(id);
+
+function renderChats(){
+ const list=$("chatList");
+ list.innerHTML="";
+ chats.forEach((chat,i)=>{
+  const el=document.createElement("div");
+  el.className="chat"+(active===i?" active":"");
+  el.onclick=()=>openChat(i);
+
+  const avatar=document.createElement("div");
+  avatar.className="avatar";
+  avatar.textContent=chat.letter;
+
+  const info=document.createElement("div");
+  info.className="chatinfo";
+
+  const name=document.createElement("strong");
+  name.textContent=chat.name;
+
+  const preview=document.createElement("small");
+  preview.textContent=chat.preview;
+
+  info.append(name,preview);
+
+  const time=document.createElement("span");
+  time.className="time";
+  time.textContent="";
+
+  el.append(avatar,info,time);
+  list.appendChild(el);
  });
 }
+
+function openChat(i){
+ active=i;
+ $("welcome").style.display="none";
+ $("settings").classList.remove("show");
+ $("conversation").classList.add("show");
+ $("activeAvatar").textContent=chats[i].letter;
+ $("activeName").textContent=chats[i].name;
+ renderMessages();
+ renderChats();
+}
+
+function renderMessages(){
+ const box=$("messages");
+ box.innerHTML="";
+ chats[active].messages.forEach(msg=>{
+  const bubble=document.createElement("div");
+  bubble.className="message "+(msg.mine?"sent":"received");
+  bubble.textContent=msg.text;
+  box.appendChild(bubble);
+ });
+ box.scrollTop=box.scrollHeight;
+}
+
+function sendMessage(e){
+ e.preventDefault();
+ const input=$("messageInput");
+ const text=input.value.trim();
+ if(!text||active<0)return;
+
+ chats[active].messages.push({text,mine:true});
+ chats[active].preview=text;
+ input.value="";
+ renderMessages();
+ renderChats();
+}
+
+function filterChats(){
+ const q=$("search").value.toLowerCase();
+ document.querySelectorAll(".chat").forEach((el,i)=>{
+  el.style.display=chats[i].name.toLowerCase().includes(q)?"flex":"none";
+ });
+}
+
+function addChat(){
+ const name=prompt("Имя нового чата:");
+ if(!name||!name.trim())return;
+ const clean=name.trim();
+ chats.push({name:clean,letter:clean[0].toUpperCase(),preview:"Новый чат",messages:[]});
+ renderChats();
+ openChat(chats.length-1);
+}
+
+function openSettings(){
+ $("welcome").style.display="none";
+ $("conversation").classList.remove("show");
+ $("settings").classList.add("show");
+ renderChats();
+}
+
+function closeSettings(){
+ $("settings").classList.remove("show");
+ if(active>=0){
+  $("conversation").classList.add("show");
+ }else{
+  $("welcome").style.display="grid";
+ }
+}
+
+renderChats();
 </script>
 </body>
 </html>
